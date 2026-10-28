@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,21 +9,22 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
+// Database credentials are read from environment variables (see .env.example)
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'job_portal',
-    password: 'Arpan@2002',
-    port: 5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST || 'localhost',
+    database: process.env.DB_NAME || 'job_portal',
+    password: process.env.DB_PASSWORD,
+    port: Number(process.env.DB_PORT) || 5432,
 });
 
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static('public'));
 app.use(session({
-    secret: 'yourSecretKey',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
 }));
